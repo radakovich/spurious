@@ -36,7 +36,7 @@ spurious.prototype = {
     expressBind: function(app){
         app.get('/:resource', this.spuriousservice.getRecords);
         app.get('/:resource/:id', this.spuriousservice.getRecord);
-        app.post('/:resource/:id', this.spuriousservice.addRecord);
+        app.post('/:resource', this.spuriousservice.addRecord);
         app.put('/:resource/:id', this.spuriousservice.updateRecord);
         app.delete('/:resource/:id', this.spuriousservice.deleteRecord);
     }
