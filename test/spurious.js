@@ -1,5 +1,5 @@
 describe("Spurious", function(){
-    var Spurious = require('../spurious.js');
+    var Spurious = require('../lib/spurious');
 
     it('should read the test file', function(){
         var spurious = new Spurious({

@@ -1,1 +1,1 @@
-module.exports = require('./spurious');
+module.exports = require('./lib/spurious');

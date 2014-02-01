@@ -1,5 +1,5 @@
 describe("Spurious spurious", function(){
-    var Spurious = require('../spurious.js');
+    var Spurious = require('../lib/spurious');
     var res, r, spurious;
 
     beforeEach(function(){
