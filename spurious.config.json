@@ -1,0 +1,10 @@
+{
+    "entities": [{
+            "name": "Hierarchy",
+            "methods": ["get"],
+            "properties": [{
+                "name": "HierarchySK",
+                "type": "int"
+            }]
+        }]   
+}

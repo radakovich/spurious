@@ -1,12 +1,7 @@
 var gulp = require('gulp');
-var mocha = require('gulp-mocha');
+var jasmine = require('gulp-jasmine');
 
 gulp.task('test', function(){
-    gulp.src(['test/*.js'], { read: false})
-        .pipe(mocha({
-            reporter: 'spec',
-            globals: {
-                should: require('should')
-            }
-            }));
+    gulp.src('test/*.js')
+        .pipe(jasmine());
 });
