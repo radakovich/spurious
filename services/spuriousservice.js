@@ -87,5 +87,22 @@ spuriousservice.prototype = {
 
             res.send(record[0]);
         }
+    },
+
+    getRecords: function(req, res){
+        if(!this.initialized){
+            console.error("You must initialize the service before retrieving a record.");
+            return;
+        }
+        
+        var resDef = this.resourceDefinitions[req.params.resource];
+
+        if(!resDef){
+            res.send(404, "Resource not found");
+        } else if(resDef.methods.indexOf('get') === -1){
+            res.send(405, "Method not allowed");
+        } else {
+            res.send(this.records[req.params.resource]);
+        }
     }
 };

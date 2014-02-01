@@ -355,4 +355,54 @@ describe("Spurious service", function(){
 
         expect(response.status).toEqual(404);
     });
+    
+    it('should retrieve a list of Companies', function(){
+        var spurious = new Spurious({
+            configFile: 'test.spurious.config.json',
+            configPath: 'test/'
+        });
+
+        var spuriousservice = new SpuriousService();
+
+        spuriousservice.initService(spurious.config);
+
+        spuriousservice.records.Company.push({
+            CompanySK: 42,
+            CompanyName: 'Lyotard'
+        });
+        spuriousservice.records.Company.push({
+            CompanySK: 69,
+            CompanyName: 'Vergara'
+        });
+        spuriousservice.records.Company.push({
+            CompanySK: 77,
+            CompanyName: 'Neo'
+        });
+
+        req = {
+            params: {
+                resource: 'Company'
+            }
+        }
+
+        spuriousservice.getRecords(req, res);
+
+        var sentRecords = res.getSend();
+
+        expect(sentRecords.length).toEqual(3);
+        
+        for(var i = 0; i < 3; i++){
+            switch(sentRecords[i].CompanySK){
+                case 42:
+                    expect(sentRecords[i].CompanyName).toEqual('Lyotard');
+                    break;
+                case 69:
+                    expect(sentRecords[i].CompanyName).toEqual('Vergara');
+                    break;
+                case 77:
+                    expect(sentRecords[i].CompanyName).toEqual('Neo');
+                    break;
+            }
+        }
+    });
 });
