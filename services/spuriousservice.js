@@ -22,6 +22,18 @@ spuriousservice.prototype = {
                 properties[prop.name] = {};
                 properties[prop.name].type = prop.type;
                 properties[prop.name].pk = prop.pk;
+
+                if(properties[prop.name].pk){
+                    if(!this.resourceDefinitions[resource.name].pk){
+                        this.resourceDefinitions[resource.name].pk = prop.name;
+                    } else {
+                        console.error('Only a single primary key can be defined for a resource');
+                        this.resourceDefinitions = null;
+                        return;
+                    }
+
+                    this.resourceDefinitions[resource.name].nextId = 1;
+                }
             }
         }
 
@@ -34,7 +46,20 @@ spuriousservice.prototype = {
             return;
         }
 
+        var resDef = this.resourceDefinitions[req.params.resource];                
          
+        if(!resDef){
+            res.send(404, "Resource not found"); 
+        }
+
+        var record = req.body;
+
+        record[resDef.pk] = resDef.nextId;
+        resDef.nextId++;
+
+        this.records[req.params.resource].push(record);
+        
+        res.send(record);
     }
 
 };
