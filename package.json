@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/JJJaquette/spurious.js/issues"
   },
-  "homepage": "https://github.com/JJJaquette/spurious.js"
+  "homepage": "https://github.com/JJJaquette/spurious.js",
+  "devDependencies": {
+    "mocha": "1.x.x"
+  }
 }
