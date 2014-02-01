@@ -1,7 +1,6 @@
-describe("Spurious service", function(){
+describe("Spurious spurious", function(){
     var Spurious = require('../spurious.js');
-    var SpuriousService = require('../services/spuriousservice.js');
-    var res, r;
+    var res, r, spurious;
 
     beforeEach(function(){
         res = {
@@ -13,22 +12,18 @@ describe("Spurious service", function(){
             }
         };
 
-    });
-    it('should be initialized', function(){
-        var spurious = new Spurious({
+        spurious = new Spurious({
             configFile: 'test.spurious.config.json',
             configPath: 'test/'
         });
-        
-        var spuriousservice = new SpuriousService();
+    });
 
-        spuriousservice.initService(spurious.config);
-        
-        expect(spuriousservice.records.Company).toBeDefined();
-        expect(spuriousservice.records.Hierarchy).toBeDefined(); 
-        expect(spuriousservice.records.Employee).toBeDefined();
+    it('should be initialized', function(){
+        expect(spurious.service.getAllRecords().Company).toBeDefined();
+        expect(spurious.service.getAllRecords().Hierarchy).toBeDefined(); 
+        expect(spurious.service.getAllRecords().Employee).toBeDefined();
 
-        var compDef = spuriousservice.resourceDefinitions.Company;
+        var compDef = spurious.service.getResourceDefs().Company;
 
         expect(compDef.pk).toEqual('CompanySK');
         expect(compDef.properties.CompanySK.pk).toBeTruthy();
@@ -41,7 +36,7 @@ describe("Spurious service", function(){
         expect(compDef.methods.indexOf('put')).not.toEqual(-1);
         expect(compDef.methods.indexOf('delete')).not.toEqual(-1);
 
-        var hierDef = spuriousservice.resourceDefinitions.Hierarchy;
+        var hierDef = spurious.service.getResourceDefs().Hierarchy;
 
         expect(hierDef.pk).toEqual('HierarchySK');
         expect(hierDef.properties.HierarchySK.pk).toBeTruthy();
@@ -52,7 +47,7 @@ describe("Spurious service", function(){
         expect(hierDef.methods.indexOf('get')).not.toEqual(-1);
         expect(hierDef.methods.indexOf('post')).toEqual(-1);
 
-        var empDef = spuriousservice.resourceDefinitions.Employee;
+        var empDef = spurious.service.getResourceDefs().Employee;
 
         expect(empDef.pk).toEqual('EmployeeSK');
         expect(empDef.properties.EmployeeSK.pk).toBeTruthy();
@@ -66,29 +61,7 @@ describe("Spurious service", function(){
         expect(empDef.methods.indexOf('post')).toEqual(-1);
     });
 
-    it('should be not initialized because of multiple primary keys', function(){
-        var spurious = new Spurious({
-            configFile: 'mpk.test.spurious.config.json',
-            configPath: 'test/'
-        });
-        
-        var spuriousservice = new SpuriousService();
-
-        spuriousservice.initService(spurious.config);
-
-        expect(spuriousservice.resourceDefinitions).toBeNull();
-    });
-
     it('should add a single record', function(){
-        var spurious = new Spurious({
-            configFile: 'test.spurious.config.json',
-            configPath: 'test/'
-        });
-        
-        var spuriousservice = new SpuriousService();
-
-        spuriousservice.initService(spurious.config);
-
         var req = {
             params: {
                 resource: 'Company'
@@ -99,28 +72,19 @@ describe("Spurious service", function(){
             }
         };
 
-        spuriousservice.addRecord(req, res);
+        spurious.service.addRecord(req, res);
         
-        expect(spuriousservice.records.Company.length).toEqual(1);
-        expect(spuriousservice.records.Company[0].CompanyName).toEqual('JJ Corp');
-        expect(spuriousservice.records.Company[0].CompanySK).toEqual(1);
+        expect(spurious.service.getAllRecords().Company.length).toEqual(1);
+        expect(spurious.service.getAllRecords().Company[0].CompanyName).toEqual('JJ Corp');
+        expect(spurious.service.getAllRecords().Company[0].CompanySK).toEqual(1);
         
         var sentRecord = res.getSend();
 
         expect(sentRecord.CompanySK).toEqual(1);
-        expect(sentRecord.CompanyName).toEqual('JJ Corp');
+        expect(sentRecord.CompanyName).toEqual('JJ Corp'); 
     });
 
     it('should add two records', function(){
-        var spurious = new Spurious({
-            configFile: 'test.spurious.config.json',
-            configPath: 'test/'
-        });
-        
-        var spuriousservice = new SpuriousService();
-
-        spuriousservice.initService(spurious.config);
-
         var req = {
             params: {
                 resource: 'Company'
@@ -131,11 +95,11 @@ describe("Spurious service", function(){
             }
         };
 
-        spuriousservice.addRecord(req, res);
+        spurious.service.addRecord(req, res);
         
-        expect(spuriousservice.records.Company.length).toEqual(1);
-        expect(spuriousservice.records.Company[0].CompanyName).toEqual('JJ Corp');
-        expect(spuriousservice.records.Company[0].CompanySK).toEqual(1);
+        expect(spurious.service.getAllRecords().Company.length).toEqual(1);
+        expect(spurious.service.getAllRecords().Company[0].CompanyName).toEqual('JJ Corp');
+        expect(spurious.service.getAllRecords().Company[0].CompanySK).toEqual(1);
         
         var sentRecord = res.getSend();
 
@@ -144,23 +108,14 @@ describe("Spurious service", function(){
 
         req.body.CompanyName = 'Second, LLC';
 
-        spuriousservice.addRecord(req, res);
+        spurious.service.addRecord(req, res);
 
-        expect(spuriousservice.records.Company.length).toEqual(2);
-        expect(spuriousservice.records.Company[1].CompanyName).toEqual('Second, LLC');
-        expect(spuriousservice.records.Company[1].CompanySK).toEqual(2);
+        expect(spurious.service.getAllRecords().Company.length).toEqual(2);
+        expect(spurious.service.getAllRecords().Company[1].CompanyName).toEqual('Second, LLC');
+        expect(spurious.service.getAllRecords().Company[1].CompanySK).toEqual(2);
     });
     
     it('should return a 404 error', function(){
-        var spurious = new Spurious({
-            configFile: 'test.spurious.config.json',
-            configPath: 'test/'
-        });
-
-        var spuriousservice = new SpuriousService();
-
-        spuriousservice.initService(spurious.config);
-
         res = {
             send: function(status, message){
                 s = status;
@@ -182,7 +137,7 @@ describe("Spurious service", function(){
             }
         };
 
-        spuriousservice.addRecord(req, res);
+        spurious.service.addRecord(req, res);
 
         var response = res.getSend();
 
@@ -190,15 +145,6 @@ describe("Spurious service", function(){
     });
 
     it('should return a 405 error', function(){
-        var spurious = new Spurious({
-            configFile: 'test.spurious.config.json',
-            configPath: 'test/'
-        });
-
-        var spuriousservice = new SpuriousService();
-
-        spuriousservice.initService(spurious.config);
-
         res = {
             send: function(status, message){
                 s = status;
@@ -218,7 +164,7 @@ describe("Spurious service", function(){
             }
         };
 
-        spuriousservice.addRecord(req, res);
+        spurious.service.addRecord(req, res);
 
         var response = res.getSend();
 
@@ -226,15 +172,6 @@ describe("Spurious service", function(){
     });
 
     it('should add retrieve a single record', function(){
-        var spurious = new Spurious({
-            configFile: 'test.spurious.config.json',
-            configPath: 'test/'
-        });
-        
-        var spuriousservice = new SpuriousService();
-
-        spuriousservice.initService(spurious.config);
-
         var req = {
             params: {
                 resource: 'Company'
@@ -245,7 +182,7 @@ describe("Spurious service", function(){
             }
         };
 
-        spuriousservice.addRecord(req, res);
+        spurious.service.addRecord(req, res);
         
         req = {
             params: {
@@ -254,7 +191,7 @@ describe("Spurious service", function(){
             }
         }
 
-        spuriousservice.getRecord(req, res);
+        spurious.service.getRecord(req, res);
 
         var sentRecord = res.getSend();
 
@@ -263,24 +200,15 @@ describe("Spurious service", function(){
     });
 
     it('should retrieve each record in Company individually', function(){
-        var spurious = new Spurious({
-            configFile: 'test.spurious.config.json',
-            configPath: 'test/'
-        });
-
-        var spuriousservice = new SpuriousService();
-
-        spuriousservice.initService(spurious.config);
-
-        spuriousservice.records.Company.push({
+        spurious.service.getAllRecords().Company.push({
             CompanySK: 42,
             CompanyName: 'Lyotard'
         });
-        spuriousservice.records.Company.push({
+        spurious.service.getAllRecords().Company.push({
             CompanySK: 69,
             CompanyName: 'Vergara'
         });
-        spuriousservice.records.Company.push({
+        spurious.service.getAllRecords().Company.push({
             CompanySK: 77,
             CompanyName: 'Neo'
         });
@@ -292,7 +220,7 @@ describe("Spurious service", function(){
             }
         }
 
-        spuriousservice.getRecord(req, res);
+        spurious.service.getRecord(req, res);
 
         var sentRecord = res.getSend();
 
@@ -301,7 +229,7 @@ describe("Spurious service", function(){
 
         req.params.id = 77;
 
-        spuriousservice.getRecord(req, res);
+        spurious.service.getRecord(req, res);
 
         sentRecord = res.getSend();
 
@@ -310,7 +238,7 @@ describe("Spurious service", function(){
 
         req.params.id = 69;
 
-        spuriousservice.getRecord(req, res);
+        spurious.service.getRecord(req, res);
 
         sentRecord = res.getSend();
 
@@ -319,15 +247,6 @@ describe("Spurious service", function(){
     });
 
     it('should return a 404 error', function(){
-        var spurious = new Spurious({
-            configFile: 'test.spurious.config.json',
-            configPath: 'test/'
-        });
-
-        var spuriousservice = new SpuriousService();
-
-        spuriousservice.initService(spurious.config);
-
         res = {
             send: function(status, message){
                 s = status;
@@ -349,7 +268,7 @@ describe("Spurious service", function(){
             }
         };
 
-        spuriousservice.getRecord(req, res);
+        spurious.service.getRecord(req, res);
 
         var response = res.getSend();
 
@@ -357,24 +276,15 @@ describe("Spurious service", function(){
     });
     
     it('should retrieve a list of Companies', function(){
-        var spurious = new Spurious({
-            configFile: 'test.spurious.config.json',
-            configPath: 'test/'
-        });
-
-        var spuriousservice = new SpuriousService();
-
-        spuriousservice.initService(spurious.config);
-
-        spuriousservice.records.Company.push({
+        spurious.service.getAllRecords().Company.push({
             CompanySK: 42,
             CompanyName: 'Lyotard'
         });
-        spuriousservice.records.Company.push({
+        spurious.service.getAllRecords().Company.push({
             CompanySK: 69,
             CompanyName: 'Vergara'
         });
-        spuriousservice.records.Company.push({
+        spurious.service.getAllRecords().Company.push({
             CompanySK: 77,
             CompanyName: 'Neo'
         });
@@ -385,7 +295,7 @@ describe("Spurious service", function(){
             }
         }
 
-        spuriousservice.getRecords(req, res);
+        spurious.service.getRecords(req, res);
 
         var sentRecords = res.getSend();
 
@@ -407,24 +317,15 @@ describe("Spurious service", function(){
     });
 
     it('should delete a single Company', function(){
-        var spurious = new Spurious({
-            configFile: 'test.spurious.config.json',
-            configPath: 'test/'
-        });
-
-        var spuriousservice = new SpuriousService();
-
-        spuriousservice.initService(spurious.config);
-
-        spuriousservice.records.Company.push({
+        spurious.service.getAllRecords().Company.push({
             CompanySK: 42,
             CompanyName: 'Lyotard'
         });
-        spuriousservice.records.Company.push({
+        spurious.service.getAllRecords().Company.push({
             CompanySK: 69,
             CompanyName: 'Vergara'
         });
-        spuriousservice.records.Company.push({
+        spurious.service.getAllRecords().Company.push({
             CompanySK: 77,
             CompanyName: 'Neo'
         });
@@ -447,33 +348,24 @@ describe("Spurious service", function(){
             }
         };
 
-        spuriousservice.deleteRecord(req, res); 
+        spurious.service.deleteRecord(req, res); 
 
         var response = res.getSend();
 
         expect(response.status).toEqual(204);
-        expect(spuriousservice.records.Company.length).toEqual(2);
+        expect(spurious.service.getAllRecords().Company.length).toEqual(2);
     });
 
     it('should update a single Company', function(){
-        var spurious = new Spurious({
-            configFile: 'test.spurious.config.json',
-            configPath: 'test/'
-        });
-
-        var spuriousservice = new SpuriousService();
-
-        spuriousservice.initService(spurious.config);
-
-        spuriousservice.records.Company.push({
+        spurious.service.getAllRecords().Company.push({
             CompanySK: 42,
             CompanyName: 'Lyotard'
         });
-        spuriousservice.records.Company.push({
+        spurious.service.getAllRecords().Company.push({
             CompanySK: 69,
             CompanyName: 'Vergara'
         });
-        spuriousservice.records.Company.push({
+        spurious.service.getAllRecords().Company.push({
             CompanySK: 77,
             CompanyName: 'Neo'
         });
@@ -489,31 +381,22 @@ describe("Spurious service", function(){
             }
         }
 
-        spuriousservice.updateRecord(req, res);
+        spurious.service.updateRecord(req, res);
 
         expect(res.getSend().CompanyName).toEqual('Win International');
-        expect(spuriousservice.records.Company.length).toEqual(3);
+        expect(spurious.service.getAllRecords().Company.length).toEqual(3);
     });
 
     it('should return 404', function(){
-        var spurious = new Spurious({
-            configFile: 'test.spurious.config.json',
-            configPath: 'test/'
-        });
-
-        var spuriousservice = new SpuriousService();
-
-        spuriousservice.initService(spurious.config);
-
-        spuriousservice.records.Company.push({
+        spurious.service.getAllRecords().Company.push({
             CompanySK: 42,
             CompanyName: 'Lyotard'
         });
-        spuriousservice.records.Company.push({
+        spurious.service.getAllRecords().Company.push({
             CompanySK: 69,
             CompanyName: 'Vergara'
         });
-        spuriousservice.records.Company.push({
+        spurious.service.getAllRecords().Company.push({
             CompanySK: 77,
             CompanyName: 'Neo'
         });
@@ -539,7 +422,7 @@ describe("Spurious service", function(){
             }
         }
 
-        spuriousservice.updateRecord(req, res);
+        spurious.service.updateRecord(req, res);
 
         expect(res.getSend().status).toEqual(404);
     });

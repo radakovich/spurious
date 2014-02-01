@@ -1,5 +1,5 @@
 var fs = require('fs'),
-    SpuriousService = require('./services/spuriousservice.js');
+    spuriousservice = require('./services/spuriousservice.js');
 
 var spurious = module.exports = function(opt){
     var self = this;
@@ -19,10 +19,20 @@ var spurious = module.exports = function(opt){
     }
    
     if(this.config.resources){
-        this.spuriousservice = new SpuriousService();
-        this.spuriousservice.initService(this.config);
+        this.service = spuriousservice;
+        this.service.initService(this.config);
     }
 };
+
+spurious.expressBind = function(app, opt){
+        var sp = new spurious(opt);
+
+        app.get('/:resource', sp.service.getRecords);
+        app.get('/:resource/:id', sp.service.getRecord);
+        app.post('/:resource', sp.service.addRecord);
+        app.put('/:resource/:id', sp.service.updateRecord);
+        app.delete('/:resource/:id', sp.service.deleteRecord);
+}
 
 spurious.prototype = {
     configFile: 'spurious.config.json',
@@ -32,13 +42,5 @@ spurious.prototype = {
     readFile: function(){
         return JSON.parse(fs.readFileSync(this.configPath + this.configFile, 'utf8')); 
     },
-
-    expressBind: function(app){
-        app.get('/:resource', this.spuriousservice.getRecords);
-        app.get('/:resource/:id', this.spuriousservice.getRecord);
-        app.post('/:resource', this.spuriousservice.addRecord);
-        app.put('/:resource/:id', this.spuriousservice.updateRecord);
-        app.delete('/:resource/:id', this.spuriousservice.deleteRecord);
-    }
 };
 

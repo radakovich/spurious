@@ -1,21 +1,21 @@
-var spuriousservice = module.exports = function(opt){
+function SpuriousService(){
 };
 
-spuriousservice.prototype = {
-    records: {},
-    resourceDefinitions: {},
-    initialized: false,
+SpuriousService.initialized = false;
+SpuriousService.records = {};
+SpuriousService.resourceDefinitions = {};
 
+SpuriousService.prototype = {
     initService: function(cfg){
         for(var i = 0, ii = cfg.resources.length; i < ii; i++){
             var resource = cfg.resources[i];
 
-            this.records[resource.name] = [];
-            this.resourceDefinitions[resource.name] = {};
+            SpuriousService.records[resource.name] = [];
+            SpuriousService.resourceDefinitions[resource.name] = {};
 
-            this.resourceDefinitions[resource.name].properties = {};
-            this.resourceDefinitions[resource.name].methods = resource.methods;
-            var properties = this.resourceDefinitions[resource.name].properties;
+            SpuriousService.resourceDefinitions[resource.name].properties = {};
+            SpuriousService.resourceDefinitions[resource.name].methods = resource.methods;
+            var properties = SpuriousService.resourceDefinitions[resource.name].properties;
 
             for(var j = 0, jj = resource.properties.length; j < jj; j++){
                 var prop = resource.properties[j];
@@ -24,29 +24,29 @@ spuriousservice.prototype = {
                 properties[prop.name].pk = prop.pk;
 
                 if(properties[prop.name].pk){
-                    if(!this.resourceDefinitions[resource.name].pk){
-                        this.resourceDefinitions[resource.name].pk = prop.name;
+                    if(!SpuriousService.resourceDefinitions[resource.name].pk){
+                        SpuriousService.resourceDefinitions[resource.name].pk = prop.name;
                     } else {
                         console.error('Only a single primary key can be defined for a resource');
-                        this.resourceDefinitions = null;
+                        SpuriousService.resourceDefinitions = null;
                         return;
                     }
 
-                    this.resourceDefinitions[resource.name].nextId = 1;
+                    SpuriousService.resourceDefinitions[resource.name].nextId = 1;
                 }
             }
         }
 
-        this.initialized = true;
+        SpuriousService.initialized = true;
     },
 
     addRecord: function(req, res){
-        if(!this.initialized){
+        if(!SpuriousService.initialized){
             console.error("You must initialize the service before adding a record.");
             return;
         }
 
-        var resDef = this.resourceDefinitions[req.params.resource];                
+        var resDef = SpuriousService.resourceDefinitions[req.params.resource];                
 
         if(!resDef){
             res.send(404, "Resource not found"); 
@@ -58,26 +58,26 @@ spuriousservice.prototype = {
             record[resDef.pk] = resDef.nextId;
             resDef.nextId++;
 
-            this.records[req.params.resource].push(record);
+            SpuriousService.records[req.params.resource].push(record);
             
             res.send(record);
         }
     },
 
     getRecord: function(req, res){
-        if(!this.initialized){
+        if(!SpuriousService.initialized){
             console.error("You must initialize the service before retrieving a record.");
             return;
         }
         
-        var resDef = this.resourceDefinitions[req.params.resource];
+        var resDef = SpuriousService.resourceDefinitions[req.params.resource];
 
         if(!resDef){
             res.send(404, "Resource not found");
         } else if(resDef.methods.indexOf('get') === -1){
             res.send(405, "Method not allowed");
         } else {
-            var record = this.records[req.params.resource].filter(function(r){
+            var record = SpuriousService.records[req.params.resource].filter(function(r){
                 return r[resDef.pk] === req.params.id;
             });
 
@@ -90,60 +90,60 @@ spuriousservice.prototype = {
     },
 
     getRecords: function(req, res){
-        if(!this.initialized){
+        if(!SpuriousService.initialized){
             console.error("You must initialize the service before retrieving a record.");
             return;
         }
         
-        var resDef = this.resourceDefinitions[req.params.resource];
+        var resDef = SpuriousService.resourceDefinitions[req.params.resource];
 
         if(!resDef){
             res.send(404, "Resource not found");
         } else if(resDef.methods.indexOf('get') === -1){
             res.send(405, "Method not allowed");
         } else {
-            res.send(this.records[req.params.resource]);
+            res.send(SpuriousService.records[req.params.resource]);
         }
     },
 
     deleteRecord: function(req, res){
-        if(!this.initialized){
+        if(!SpuriousService.initialized){
             console.error("You must initialize the service before retrieving a record.");
             return;
         }
         
-        var resDef = this.resourceDefinitions[req.params.resource];
+        var resDef = SpuriousService.resourceDefinitions[req.params.resource];
 
         if(!resDef){
             res.send(404, "Resource not found");
         } else if(resDef.methods.indexOf('delete') === -1){
             res.send(405, "Method not allowed");
         } else {
-            var i = this.records[req.params.resource].map(function(r){
+            var i = SpuriousService.records[req.params.resource].map(function(r){
                 return r[resDef.pk];
             }).indexOf(req.params.id);
 
             if(i !== -1){
-                this.records[req.params.resource].splice(i, 1);
+                SpuriousService.records[req.params.resource].splice(i, 1);
                 res.send(204, "Resource deleted");
             }
         }
     },
 
     updateRecord: function(req, res){
-        if(!this.initialized){
+        if(!SpuriousService.initialized){
             console.error("You must initialize the service before retrieving a record.");
             return;
         }
         
-        var resDef = this.resourceDefinitions[req.params.resource];
+        var resDef = SpuriousService.resourceDefinitions[req.params.resource];
 
         if(!resDef){
             res.send(404, "Resource not found");
         } else if(resDef.methods.indexOf('delete') === -1){
             res.send(405, "Method not allowed");
         } else {
-            var records = this.records[req.params.resource].filter(function(r){
+            var records = SpuriousService.records[req.params.resource].filter(function(r){
                 return r[resDef.pk] === req.params.id; 
             });
 
@@ -159,5 +159,15 @@ spuriousservice.prototype = {
                 res.send(records[0]);
             }
         }
+    },
+
+    getAllRecords: function(){
+        return SpuriousService.records;
+    },
+
+    getResourceDefs: function(){
+        return SpuriousService.resourceDefinitions;
     }
 };
+
+module.exports = new SpuriousService();
