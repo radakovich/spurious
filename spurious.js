@@ -1,5 +1,5 @@
 var fs = require('fs'),
-    path = require('path');
+    SpuriousService = require('./services/spuriousservice.js');
 
 var spurious = module.exports = function(opt){
     var self = this;
@@ -17,10 +17,11 @@ var spurious = module.exports = function(opt){
     } catch (e){
         console.log("There was a problem reading " + this.configPath + this.configFile);
     }
-};
-
-spurious.expressBind = function(app){
-
+   
+    if(this.config.resources){
+        this.spuriousservice = new SpuriousService();
+        this.spuriousservice.initService(this.config);
+    }
 };
 
 spurious.prototype = {
@@ -30,6 +31,14 @@ spurious.prototype = {
 
     readFile: function(){
         return JSON.parse(fs.readFileSync(this.configPath + this.configFile, 'utf8')); 
+    },
+
+    expressBind: function(app){
+        app.get('/:resource', this.spuriousservice.getRecords);
+        app.get('/:resource/:id', this.spuriousservice.getRecord);
+        app.post('/:resource/:id', this.spuriousservice.addRecord);
+        app.put('/:resource/:id', this.spuriousservice.updateRecord);
+        app.delete('/:resource/:id', this.spuriousservice.deleteRecord);
     }
 };
 
