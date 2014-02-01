@@ -454,4 +454,93 @@ describe("Spurious service", function(){
         expect(response.status).toEqual(204);
         expect(spuriousservice.records.Company.length).toEqual(2);
     });
+
+    it('should update a single Company', function(){
+        var spurious = new Spurious({
+            configFile: 'test.spurious.config.json',
+            configPath: 'test/'
+        });
+
+        var spuriousservice = new SpuriousService();
+
+        spuriousservice.initService(spurious.config);
+
+        spuriousservice.records.Company.push({
+            CompanySK: 42,
+            CompanyName: 'Lyotard'
+        });
+        spuriousservice.records.Company.push({
+            CompanySK: 69,
+            CompanyName: 'Vergara'
+        });
+        spuriousservice.records.Company.push({
+            CompanySK: 77,
+            CompanyName: 'Neo'
+        });
+
+        req = {
+            params: {
+                resource: 'Company',
+                id: 42
+            },
+            body: {
+                CompanySK: 42,
+                CompanyName: 'Win International'
+            }
+        }
+
+        spuriousservice.updateRecord(req, res);
+
+        expect(res.getSend().CompanyName).toEqual('Win International');
+        expect(spuriousservice.records.Company.length).toEqual(3);
+    });
+
+    it('should return 404', function(){
+        var spurious = new Spurious({
+            configFile: 'test.spurious.config.json',
+            configPath: 'test/'
+        });
+
+        var spuriousservice = new SpuriousService();
+
+        spuriousservice.initService(spurious.config);
+
+        spuriousservice.records.Company.push({
+            CompanySK: 42,
+            CompanyName: 'Lyotard'
+        });
+        spuriousservice.records.Company.push({
+            CompanySK: 69,
+            CompanyName: 'Vergara'
+        });
+        spuriousservice.records.Company.push({
+            CompanySK: 77,
+            CompanyName: 'Neo'
+        });
+
+        req = {
+            params: {
+                resource: 'Company',
+                id: 99 
+            },
+            body: {
+                CompanySK: 99,
+                CompanyName: 'Faker'
+            }
+        }
+
+        res = {
+            send: function(status, message){
+                s = status;
+                m = message;
+            },
+            getSend: function(){
+                return {status:s, message:m};
+            }
+        }
+
+        spuriousservice.updateRecord(req, res);
+
+        expect(res.getSend().status).toEqual(404);
+    });
 });

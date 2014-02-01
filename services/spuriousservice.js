@@ -128,5 +128,36 @@ spuriousservice.prototype = {
                 res.send(204, "Resource deleted");
             }
         }
+    },
+
+    updateRecord: function(req, res){
+        if(!this.initialized){
+            console.error("You must initialize the service before retrieving a record.");
+            return;
+        }
+        
+        var resDef = this.resourceDefinitions[req.params.resource];
+
+        if(!resDef){
+            res.send(404, "Resource not found");
+        } else if(resDef.methods.indexOf('delete') === -1){
+            res.send(405, "Method not allowed");
+        } else {
+            var records = this.records[req.params.resource].filter(function(r){
+                return r[resDef.pk] === req.params.id; 
+            });
+
+            if(records.length > 1){
+                throw 'There is something amiss with your primary keys.  Apologies...';
+            } else if(records.length === 0){
+                res.send(404, "Not found"); 
+            } else{
+                records[0] = req.body;
+
+                records[0][resDef.pk] = req.params.id;
+                
+                res.send(records[0]);
+            }
+        }
     }
 };
