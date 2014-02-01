@@ -11,11 +11,22 @@ var spurious = module.exports = function(opt){
     if(opt.configPath){
         this.configPath = opt.configPath;
     }
+
+    try{
+        this.config = this.readFile();
+    } catch (e){
+        console.log("There was a problem reading " + this.configPath + this.configFile);
+    }
+};
+
+spurious.expressBind = function(app){
+
 };
 
 spurious.prototype = {
     configFile: 'spurious.config.json',
     configPath: '',
+    config: {},
 
     readFile: function(){
         return JSON.parse(fs.readFileSync(this.configPath + this.configFile, 'utf8')); 

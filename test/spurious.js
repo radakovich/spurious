@@ -1,14 +1,22 @@
 describe("Spurious", function(){
     var Spurious = require('../spurious.js');
 
-    it('should ', function(){
+    it('should read the test file', function(){
         var spurious = new Spurious({
             configFile: 'test.spurious.config.json',
             configPath: 'test/'
         });
 
-        var config = spurious.readFile();
-
-        expect(config.entities.length).toEqual(1);
+        expect(spurious.config.resources.length).toEqual(3);
     });
+    
+    it('should not find the config file', function(){
+        var spurious = new Spurious({
+            configFile: 'incorrect.json',
+            configPath: 'wrong/path/'
+        });
+        
+        expect(Object.getOwnPropertyNames(spurious.config).length).toEqual(0);
+    });
+
 });
