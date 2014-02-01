@@ -104,5 +104,29 @@ spuriousservice.prototype = {
         } else {
             res.send(this.records[req.params.resource]);
         }
+    },
+
+    deleteRecord: function(req, res){
+        if(!this.initialized){
+            console.error("You must initialize the service before retrieving a record.");
+            return;
+        }
+        
+        var resDef = this.resourceDefinitions[req.params.resource];
+
+        if(!resDef){
+            res.send(404, "Resource not found");
+        } else if(resDef.methods.indexOf('delete') === -1){
+            res.send(405, "Method not allowed");
+        } else {
+            var i = this.records[req.params.resource].map(function(r){
+                return r[resDef.pk];
+            }).indexOf(req.params.id);
+
+            if(i !== -1){
+                this.records[req.params.resource].splice(i, 1);
+                res.send(204, "Resource deleted");
+            }
+        }
     }
 };

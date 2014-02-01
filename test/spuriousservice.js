@@ -405,4 +405,53 @@ describe("Spurious service", function(){
             }
         }
     });
+
+    it('should delete a single Company', function(){
+        var spurious = new Spurious({
+            configFile: 'test.spurious.config.json',
+            configPath: 'test/'
+        });
+
+        var spuriousservice = new SpuriousService();
+
+        spuriousservice.initService(spurious.config);
+
+        spuriousservice.records.Company.push({
+            CompanySK: 42,
+            CompanyName: 'Lyotard'
+        });
+        spuriousservice.records.Company.push({
+            CompanySK: 69,
+            CompanyName: 'Vergara'
+        });
+        spuriousservice.records.Company.push({
+            CompanySK: 77,
+            CompanyName: 'Neo'
+        });
+
+        req = {
+            params: {
+                resource: 'Company',
+                id: 69
+            }
+        }
+
+        res = {
+            send: function(status, message){
+                s = status;
+                m = message;
+                return;
+            },
+            getSend: function(){
+                return {status: s, message: m};
+            }
+        };
+
+        spuriousservice.deleteRecord(req, res); 
+
+        var response = res.getSend();
+
+        expect(response.status).toEqual(204);
+        expect(spuriousservice.records.Company.length).toEqual(2);
+    });
 });
