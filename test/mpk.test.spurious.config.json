@@ -3,7 +3,7 @@
         {
             "name":"Hierarchy",
             "methods":[
-                "get"
+                "post"
             ],
             "properties":[
                 {

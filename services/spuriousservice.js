@@ -47,19 +47,21 @@ spuriousservice.prototype = {
         }
 
         var resDef = this.resourceDefinitions[req.params.resource];                
-         
+
         if(!resDef){
             res.send(404, "Resource not found"); 
+        } else if(resDef.methods.indexOf('post') === -1){
+            res.send(405, "Method not allowed");
+        } else{
+            var record = req.body;
+
+            record[resDef.pk] = resDef.nextId;
+            resDef.nextId++;
+
+            this.records[req.params.resource].push(record);
+            
+            res.send(record);
         }
-
-        var record = req.body;
-
-        record[resDef.pk] = resDef.nextId;
-        resDef.nextId++;
-
-        this.records[req.params.resource].push(record);
-        
-        res.send(record);
     }
 
 };

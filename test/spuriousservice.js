@@ -150,4 +150,78 @@ describe("Spurious service", function(){
         expect(spuriousservice.records.Company[1].CompanyName).toEqual('Second, LLC');
         expect(spuriousservice.records.Company[1].CompanySK).toEqual(2);
     });
+    
+    it('should return a 404 error', function(){
+        var spurious = new Spurious({
+            configFile: 'test.spurious.config.json',
+            configPath: 'test/'
+        });
+
+        var spuriousservice = new SpuriousService();
+
+        spuriousservice.initService(spurious.config);
+
+        res = {
+            send: function(status, message){
+                s = status;
+                m = message;
+                return;
+            },
+            getSend: function(){
+                return {status: s, message: m};
+            }
+        };
+
+        var req = {
+            params: {
+                resource: 'Derrida'
+            },
+            body: {
+                firstName: 'Jacques',
+                same: 'defer'
+            }
+        };
+
+        spuriousservice.addRecord(req, res);
+
+        var response = res.getSend();
+
+        expect(response.status).toEqual(404);
+    });
+
+    it('should return a 405 error', function(){
+        var spurious = new Spurious({
+            configFile: 'test.spurious.config.json',
+            configPath: 'test/'
+        });
+
+        var spuriousservice = new SpuriousService();
+
+        spuriousservice.initService(spurious.config);
+
+        res = {
+            send: function(status, message){
+                s = status;
+                m = message;
+                return;
+            },
+            getSend: function(){
+                return {status: s, message: m};
+            }
+        };
+
+        var req = {
+            params: {
+                resource: 'Hierarchy'
+            },
+            body: {
+            }
+        };
+
+        spuriousservice.addRecord(req, res);
+
+        var response = res.getSend();
+
+        expect(response.status).toEqual(405);
+    });
 });
