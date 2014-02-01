@@ -224,4 +224,135 @@ describe("Spurious service", function(){
 
         expect(response.status).toEqual(405);
     });
+
+    it('should add retrieve a single record', function(){
+        var spurious = new Spurious({
+            configFile: 'test.spurious.config.json',
+            configPath: 'test/'
+        });
+        
+        var spuriousservice = new SpuriousService();
+
+        spuriousservice.initService(spurious.config);
+
+        var req = {
+            params: {
+                resource: 'Company'
+            },
+            body: {
+                CompanySK: 0,
+                CompanyName: 'JJ Corp'
+            }
+        };
+
+        spuriousservice.addRecord(req, res);
+        
+        req = {
+            params: {
+                resource: 'Company',
+                id: 1
+            }
+        }
+
+        spuriousservice.getRecord(req, res);
+
+        var sentRecord = res.getSend();
+
+        expect(sentRecord.CompanySK).toEqual(1);
+        expect(sentRecord.CompanyName).toEqual('JJ Corp');
+    });
+
+    it('should retrieve each record in Company individually', function(){
+        var spurious = new Spurious({
+            configFile: 'test.spurious.config.json',
+            configPath: 'test/'
+        });
+
+        var spuriousservice = new SpuriousService();
+
+        spuriousservice.initService(spurious.config);
+
+        spuriousservice.records.Company.push({
+            CompanySK: 42,
+            CompanyName: 'Lyotard'
+        });
+        spuriousservice.records.Company.push({
+            CompanySK: 69,
+            CompanyName: 'Vergara'
+        });
+        spuriousservice.records.Company.push({
+            CompanySK: 77,
+            CompanyName: 'Neo'
+        });
+
+        req = {
+            params: {
+                resource: 'Company',
+                id: 42
+            }
+        }
+
+        spuriousservice.getRecord(req, res);
+
+        var sentRecord = res.getSend();
+
+        expect(sentRecord.CompanySK).toEqual(42);
+        expect(sentRecord.CompanyName).toEqual('Lyotard');
+
+        req.params.id = 77;
+
+        spuriousservice.getRecord(req, res);
+
+        sentRecord = res.getSend();
+
+        expect(sentRecord.CompanySK).toEqual(77);
+        expect(sentRecord.CompanyName).toEqual('Neo');
+
+        req.params.id = 69;
+
+        spuriousservice.getRecord(req, res);
+
+        sentRecord = res.getSend();
+
+        expect(sentRecord.CompanySK).toEqual(69);
+        expect(sentRecord.CompanyName).toEqual('Vergara');
+    });
+
+    it('should return a 404 error', function(){
+        var spurious = new Spurious({
+            configFile: 'test.spurious.config.json',
+            configPath: 'test/'
+        });
+
+        var spuriousservice = new SpuriousService();
+
+        spuriousservice.initService(spurious.config);
+
+        res = {
+            send: function(status, message){
+                s = status;
+                m = message;
+                return;
+            },
+            getSend: function(){
+                return {status: s, message: m};
+            }
+        };
+
+        var req = {
+            params: {
+                resource: 'Derrida'
+            },
+            body: {
+                firstName: 'Jacques',
+                same: 'defer'
+            }
+        };
+
+        spuriousservice.getRecord(req, res);
+
+        var response = res.getSend();
+
+        expect(response.status).toEqual(404);
+    });
 });

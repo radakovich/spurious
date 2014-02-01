@@ -62,6 +62,30 @@ spuriousservice.prototype = {
             
             res.send(record);
         }
-    }
+    },
 
+    getRecord: function(req, res){
+        if(!this.initialized){
+            console.error("You must initialize the service before retrieving a record.");
+            return;
+        }
+        
+        var resDef = this.resourceDefinitions[req.params.resource];
+
+        if(!resDef){
+            res.send(404, "Resource not found");
+        } else if(resDef.methods.indexOf('get') === -1){
+            res.send(405, "Method not allowed");
+        } else {
+            var record = this.records[req.params.resource].filter(function(r){
+                return r[resDef.pk] === req.params.id;
+            });
+
+            if(record.length > 1){
+                throw 'Your primary keys are messed up.  Sorry...';
+            }
+
+            res.send(record[0]);
+        }
+    }
 };
