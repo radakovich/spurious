@@ -189,7 +189,7 @@ describe("Spurious spurious", function(){
                 resource: 'Company',
                 id: 1
             }
-        }
+        };
 
         spurious.service.getRecord(req, res);
 
@@ -218,7 +218,7 @@ describe("Spurious spurious", function(){
                 resource: 'Company',
                 id: 42
             }
-        }
+        };
 
         spurious.service.getRecord(req, res);
 
@@ -293,7 +293,7 @@ describe("Spurious spurious", function(){
             params: {
                 resource: 'Company'
             }
-        }
+        };
 
         spurious.service.getRecords(req, res);
 
@@ -335,7 +335,7 @@ describe("Spurious spurious", function(){
                 resource: 'Company',
                 id: 69
             }
-        }
+        };
 
         res = {
             send: function(status, message){
@@ -379,7 +379,7 @@ describe("Spurious spurious", function(){
                 CompanySK: 42,
                 CompanyName: 'Win International'
             }
-        }
+        };
 
         spurious.service.updateRecord(req, res);
 
@@ -410,7 +410,7 @@ describe("Spurious spurious", function(){
                 CompanySK: 99,
                 CompanyName: 'Faker'
             }
-        }
+        };
 
         res = {
             send: function(status, message){
@@ -420,7 +420,7 @@ describe("Spurious spurious", function(){
             getSend: function(){
                 return {status:s, message:m};
             }
-        }
+        };
 
         spurious.service.updateRecord(req, res);
 
