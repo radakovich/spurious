@@ -1,4 +1,4 @@
 spurious.js
 ===========
 
-A super-lightweight web service generator.
+A super-lightweight mock web service generator.
