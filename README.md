@@ -213,7 +213,7 @@ The configuration file is simple.  There is a list of ```resources```.  You can 
 
 Each resource has a ```name```, available HTTP ```methods```, and a list of ```properties```.  Below, I will get into which properties are required and details about what each property accomplishes.
 
-#### name
+#### "name"
 
 There are two names.  The resource name and the property name.  Both of these names are required.  If a resource is defined, it must have a name.  If a property is defined, it also must have a name.
 
@@ -221,7 +221,15 @@ The resource name is used in the URL when making requests for a resource.  In th
 
 The property name is the name that is used in the JSON objects that are sent between the client and the server.  For example, in the above example, the ```Employee``` resource has three properties.  Each property has a ```name```.  Notice that the JSON object that we retrieve when making the request to ```http://localhost:3000/Employee/1``` has three properies: ```EmployeeId```, ```FirstName```, and ```LastName```.  These names, as you can guess, directly correspond to the property names defined in the configuration.
 
-#### methods
+#### "methods"
 
 ```methods``` is a list of HTTP methods that the server will allow for a resource.  The available options are ```get```, ```post```, ```put```, and ```delete```.  If you try to make a request for a resource that does not allow that particular method, the server will return a ```405 Method Not Allowed``` status.
+
+#### "properties"
+
+Properties were discussed above in the ```"name"``` section.  The properties array is required to have at least one element.  You can have as many properties as you like.
+
+#### "generate"
+
+If ```generate``` exists with a valid integer value, Spurious will generate that number of records.  If the ```generate``` property does not exist, no records will be generated.  You can still perform all actions on the resource.
 
