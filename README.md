@@ -157,3 +157,71 @@ X-Powered-By: Express
 Date: Sat, 01 Feb 2014 22:55:14 GMT
 Connection: keep-alive
 ```
+
+## Configuration
+
+The heart of Spurious is the ```spurious.conf.json``` file.  You can change the name and location of the configuration file by passing options to the ```expressBind``` method in ```app.js```, but the default ```spurious.conf.json``` file in the root of the application should serve for most purposes.   
+
+```
+spurious.expressBind(app, {
+    configFile: 'test.spurious.config.json',
+    configPath: 'test/'
+});
+```
+
+The sample app uses the following configuration.
+
+```
+{
+  "resources":[
+    {
+      "name":"Employee",
+      "methods":[
+        "get",
+        "post",
+        "put",
+        "delete"
+      ],
+      "generate":25,
+      "properties":[
+        {
+          "name":"EmployeeId",
+          "type":"int",
+          "pk":true
+        },
+        {
+          "name":"FirstName",
+          "faker": {
+              "category": "Name",
+              "type":"firstName"
+          }
+        },
+        {
+          "name":"LastName",
+          "faker": {
+              "category": "Name",
+              "type":"lastName"
+          }
+        }
+      ]
+    }
+  ]   
+}
+```
+
+The configuration file is simple.  There is a list of ```resources```.  You can define as many resources as you need. 
+
+Each resource has a ```name```, available HTTP ```methods```, and a list of ```properties```.  Below, I will get into which properties are required and details about what each property accomplishes.
+
+#### name
+
+There are two names.  The resource name and the property name.  Both of these names are required.  If a resource is defined, it must have a name.  If a property is defined, it also must have a name.
+
+The resource name is used in the URL when making requests for a resource.  In the above file, you will notice that the resource's ```name``` is ```Employee``` which directly corresponds to the "Employee" in the URL (e.g. ```http://localhost:3000/Employee```).
+
+The property name is the name that is used in the JSON objects that are sent between the client and the server.  For example, in the above example, the ```Employee``` resource has three properties.  Each property has a ```name```.  Notice that the JSON object that we retrieve when making the request to ```http://localhost:3000/Employee/1``` has three properies: ```EmployeeId```, ```FirstName```, and ```LastName```.  These names, as you can guess, directly correspond to the property names defined in the configuration.
+
+#### methods
+
+```methods``` is a list of HTTP methods that the server will allow for a resource.  The available options are ```get```, ```post```, ```put```, and ```delete```.  If you try to make a request for a resource that does not allow that particular method, the server will return a ```405 Method Not Allowed``` status.
+
