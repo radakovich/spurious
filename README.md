@@ -116,3 +116,44 @@ Connection: keep-alive
 }
 ```
 
+#### PUT
+
+Issuing a ```PUT``` to the server on the resource will update a resource.  You must supply an identifier, so the application knows which resource to update.
+
+```
+curl -i -X PUT -H "Content-Type: application/json" -d '{"EmployeeId":25, "FirstName":"Baruch", "LastName":"Spinoza"}' http://localhost:3000/Employee/25
+```
+The updated resource is returned with a ```200 OK``` response.
+
+```
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 72
+Date: Sat, 01 Feb 2014 22:51:34 GMT
+Connection: keep-alive
+
+{
+  "EmployeeId": 25,
+  "FirstName": "Baruch",
+  "LastName": "Spinoza"
+}
+```
+
+You can verify that the resource was updated by issuing a ```GET ``` on the resource with the appropriate identifier as shown above.
+
+#### DELETE
+
+Deleting a resource is easy, and I'm sure you can guess what you need to do.  Making a ```DELETE``` request to the server will remove the resource.
+
+```
+curl -i -X DELETE http://localhost:3000/Employee/26
+```
+The resource is removed, and the server responds with an empty body and a ```204 No Content``` status.
+
+```
+HTTP/1.1 204 No Content
+X-Powered-By: Express
+Date: Sat, 01 Feb 2014 22:55:14 GMT
+Connection: keep-alive
+```
