@@ -233,3 +233,31 @@ Properties were discussed above in the ```"name"``` section.  The properties arr
 
 If ```generate``` exists with a valid integer value, Spurious will generate that number of records.  If the ```generate``` property does not exist, no records will be generated.  You can still perform all actions on the resource.
 
+#### "faker"
+
+If ```generate``` exists, one or more properties must have a ```faker``` property.  The ```faker``` property has two required properties, ```category``` and ```type```.  The two required properties correspond directly to the marvelous [Faker.js](https://github.com/marak/Faker.js/) API.  Take a look at the documentation for Faker.js to see what generated data is available.  
+
+```category``` corresponds to the top-level of the API.  For instance, ```Name```, ```Address```, ```PhoneNumber```, etc.  The ```category``` value **is** case-sensitive.
+
+The ```type``` of ```faker``` directly corresponds to the bottom-level of the Faker.js API.  For example, ```findName```, ```phoneNumber```, ```email```, etc.  The ```type``` is also case sensitive.  
+
+Take a look at the Faker.js API.  It is really, really cool.
+
+#### "pk"
+
+The ```pk``` property of an element of ```properties``` defines the resource's primary key.  One, and only one, primary key can be defined per resource.  If multiple primary keys are defined in a single resource, Spurious will spit out an error message and not load anything.  
+
+The primary key is auto-generated.  The value of the key is always an integer and always begins at 1.  This is the value used when making requests on a resource that require an id (e.g.. ```http://localhost:3000/Employee/1```.
+
+## Conclusion
+
+There are complicated APIs out there, but, currently, Spurious handles fairly simple APIs.  I am still considering how it can mock more complex APIs, because at that point it will be exceptionally handy.
+
+I plan on adding a few things in the near future that I need.
+
++ Ability to handle foreign keys.
++ Ability to handle OData-style URLs.
++ Customizable error response objects.
++ Redis support to persist state.
+
+
