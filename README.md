@@ -248,16 +248,3 @@ Take a look at the Faker.js API.  It is really, really cool.
 The ```pk``` property of an element of ```properties``` defines the resource's primary key.  One, and only one, primary key can be defined per resource.  If multiple primary keys are defined in a single resource, Spurious will spit out an error message and not load anything.  
 
 The primary key is auto-generated.  The value of the key is always an integer and always begins at 1.  This is the value used when making requests on a resource that require an id (e.g.. ```http://localhost:3000/Employee/1```.
-
-## Conclusion
-
-There are complicated APIs out there, but, currently, Spurious handles fairly simple APIs.  I am still considering how it can mock more complex APIs, because at that point it will be exceptionally handy.
-
-I plan on adding a few things in the near future that I need.
-
-+ Ability to handle foreign keys.
-+ Ability to handle OData-style URLs.
-+ Customizable error response objects.
-+ Redis support to persist state.
-
-
