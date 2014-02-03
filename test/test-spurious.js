@@ -3,7 +3,7 @@ describe("Spurious", function(){
 
     it('should read the test file', function(){
         var spurious = new Spurious({
-            configFile: 'test.spurious.config.json',
+            configFile: 'test.spurious.yaml',
             configPath: 'test/'
         });
 

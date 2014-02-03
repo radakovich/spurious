@@ -4,7 +4,7 @@ describe("Faker spurious", function(){
 
     beforeEach(function(){
         spurious = new Spurious({
-            configFile: 'faker.test.spurious.config.json',
+            configFile: 'faker.spurious.yaml',
             configPath: 'test/'
         });
         

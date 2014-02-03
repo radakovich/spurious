@@ -13,7 +13,7 @@ describe("Spurious spurious", function(){
         };
 
         spurious = new Spurious({
-            configFile: 'test.spurious.config.json',
+            configFile: 'test.spurious.yaml',
             configPath: 'test/'
         });
     });
