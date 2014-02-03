@@ -160,53 +160,33 @@ Connection: keep-alive
 
 ## Configuration
 
-The heart of Spurious is the ```spurious.conf.json``` file.  You can change the name and location of the configuration file by passing options to the ```expressBind``` method in ```app.js```, but the default ```spurious.conf.json``` file in the root of the application should serve for most purposes.   
+The heart of Spurious is the ```spurious.yaml``` file, and the sample app uses the following configuration.
 
 ```
-spurious.expressBind(app, {
-    configFile: 'test.spurious.config.json',
-    configPath: 'test/'
-});
-```
-
-The sample app uses the following configuration.
-
-```
-{
-  "resources":[
-    {
-      "name":"Employee",
-      "methods":[
-        "get",
-        "post",
-        "put",
-        "delete"
-      ],
-      "generate":25,
-      "properties":[
-        {
-          "name":"EmployeeId",
-          "type":"int",
-          "pk":true
-        },
-        {
-          "name":"FirstName",
-          "faker": {
-              "category": "Name",
-              "type":"firstName"
-          }
-        },
-        {
-          "name":"LastName",
-          "faker": {
-              "category": "Name",
-              "type":"lastName"
-          }
-        }
-      ]
-    }
-  ]   
-}
+resources:
+  - 
+    name: Employee
+    methods:
+      - get
+      - post
+      - put
+      - delete
+    generate: 25
+    properties: 
+      -  
+        name: EmployeeId
+        type: int
+        pk: true
+      -  
+        name: FirstName
+        faker: 
+          category: Name
+          type: firstName
+      - 
+        name: LastName
+        faker:
+          category: Name
+          type: lastName
 ```
 
 The configuration file is simple.  There is a list of ```resources```.  You can define as many resources as you need. 
