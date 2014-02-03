@@ -23,7 +23,7 @@ The sample app comes with a simple Employee resource that generates 25 records. 
 
 Depending on how a resource is configure, it respond to four HTTP methods: ```GET```, ```POST```, ```PUT```, and ```DELETE```.
 
-Let's make some requests to the Employee resource.  I will use (cURL)[http://curl.haxx.se/] to execute the requests, but feel free to use any tool that allows you to make HTTP requests.
+Let's make some requests to the Employee resource.  I will use [cURL](http://curl.haxx.se/) to execute the requests, but feel free to use any tool that allows you to make HTTP requests.
 
 #### GET
 
