@@ -1,5 +1,5 @@
-spurious.js
-===========
+spurious
+========
 
 Spurious is a JavaScript library that [Express](https://github.com/visionmedia/express) uses  to create mock web services quickly and easily.  Spurious can also generate *quality* fake data for your web services.
 
