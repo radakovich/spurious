@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Spurious by JJJaquette</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Spurious</h1>
+        <h2>A super-lightweight mock web service generator.</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/JJJaquette/spurious/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/JJJaquette/spurious/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/JJJaquette/spurious" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>
+<a name="spurious" class="anchor" href="#spurious"><span class="octicon octicon-link"></span></a>spurious</h1>
+
+<p>Spurious is a JavaScript library that <a href="https://github.com/visionmedia/express">Express</a> uses  to create mock web services quickly and easily.  Spurious can also generate <em>quality</em> fake data for your web services.</p>
+
+<p>This library was born out of the frustration that comes with developing the front-end of an application and the back-end synchronously.  APIs that are not implemented, bugs, and other things can seriously hamper your front-end development.  As long as a resource definition is agreed upon, Spurious can generate a RESTful "mock" API that the front-end can consume.</p>
+
+<h2>
+<a name="quick-start" class="anchor" href="#quick-start"><span class="octicon octicon-link"></span></a>Quick Start</h2>
+
+<p>The easiest way to get running quickly with Spurious is to clone the 
+<a href="https://github.com/JJJaquette/spurious-sample-app">Spurious sample app</a> on your local machine.</p>
+
+<pre><code>git clone https://github.com/JJJaquette/spurious-sample-app
+</code></pre>
+
+<p>Next, change into the sample app's directory, install the necessary modules, and start the server.</p>
+
+<pre><code>cd spurious-sample-app
+npm install
+npm start
+</code></pre>
+
+<p>The sample app comes with a simple Employee resource that generates 25 records.  The Employee resource is completely arbitrary.  You can remove the Employee resource, add to it, create more resources, etc.  We will get to the configuration later.  For now, you are just going to play with the Employee resource to get an idea of how Spurious works.</p>
+
+<p>Depending on how a resource is configure, it respond to four HTTP methods: <code>GET</code>, <code>POST</code>, <code>PUT</code>, and <code>DELETE</code>.</p>
+
+<p>Let's make some requests to the Employee resource.  I will use <a href="http://curl.haxx.se/">cURL</a> to execute the requests, but feel free to use any tool that allows you to make HTTP requests.</p>
+
+<h4>
+<a name="get" class="anchor" href="#get"><span class="octicon octicon-link"></span></a>GET</h4>
+
+<p>There are two variations of <code>GET</code> that are recognized.  A list of resources can be returned as well as an individual resource.</p>
+
+<p>To retrieve a list of Employees, execute the follow cURL command (or the equivalent in your tool).</p>
+
+<pre><code>curl -i http://localhost:3000/Employee
+</code></pre>
+
+<p>A list of the 25 generated Employees is returned with a <code>200 OK</code> HTTP status.</p>
+
+<pre><code>HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 2070
+ETag: "-1493604622"
+Date: Sat, 01 Feb 2014 22:35:45 GMT
+Connection: keep-alive
+
+[
+  {
+    "EmployeeId": 1,
+    "FirstName": "Leopoldo",
+    "LastName": "Howe"
+  },
+  {
+    "EmployeeId": 2,
+    "FirstName": "Michelle",
+    "LastName": "Mosciski"
+  },
+  {
+    "EmployeeId": 3,
+    "FirstName": "Alison",
+    "LastName": "Moore"
+  },
+        ...
+  {
+    "EmployeeId": 25,
+    "FirstName": "Ona",
+    "LastName": "Prohaska"
+  }
+]
+</code></pre>
+
+<p>To retrieve a list, just make a request for the resource without supplying an id.  Supplying an id will return a single resource.</p>
+
+<pre><code>curl -i http://localhost:3000/Employee/25
+</code></pre>
+
+<p>The single Employee resource that was requested is returned with a <code>200 OK</code> HTTP status.</p>
+
+<pre><code>HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 70
+ETag: "-46630880"
+Date: Sat, 01 Feb 2014 22:40:34 GMT
+Connection: keep-alive
+
+{
+  "EmployeeId": 25,
+  "FirstName": "Ona",
+  "LastName": "Prohaska"
+}
+</code></pre>
+
+<h4>
+<a name="post" class="anchor" href="#post"><span class="octicon octicon-link"></span></a>POST</h4>
+
+<p>Adding a resource is as simple as issuing a <code>POST</code>.  </p>
+
+<pre><code>curl -i X POST -H "Content-Type: application/json" -d '{"EmployeeId":0, "FirstName":"Jean-Jacques", "LastName":"Jaquette"}' http://localhost:3000/Employee
+</code></pre>
+
+<p>The server responds with a <code>201 Created</code> status, and returns the new Employee resource with the updated identified.  Spurious handles generating simple autoincremented identifiers.</p>
+
+<pre><code>HTTP/1.1 201 Created
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 79
+Date: Sat, 01 Feb 2014 22:43:16 GMT
+Connection: keep-alive
+
+{
+  "EmployeeId": 27,
+  "FirstName": "Jean-Jacques",
+  "LastName": "Jaquette"
+}
+</code></pre>
+
+<h4>
+<a name="put" class="anchor" href="#put"><span class="octicon octicon-link"></span></a>PUT</h4>
+
+<p>Issuing a <code>PUT</code> to the server on the resource will update a resource.  You must supply an identifier, so the application knows which resource to update.</p>
+
+<pre><code>curl -i -X PUT -H "Content-Type: application/json" -d '{"EmployeeId":25, "FirstName":"Baruch", "LastName":"Spinoza"}' http://localhost:3000/Employee/25
+</code></pre>
+
+<p>The updated resource is returned with a <code>200 OK</code> response.</p>
+
+<pre><code>HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 72
+Date: Sat, 01 Feb 2014 22:51:34 GMT
+Connection: keep-alive
+
+{
+  "EmployeeId": 25,
+  "FirstName": "Baruch",
+  "LastName": "Spinoza"
+}
+</code></pre>
+
+<p>You can verify that the resource was updated by issuing a <code>GET</code> on the resource with the appropriate identifier as shown above.</p>
+
+<h4>
+<a name="delete" class="anchor" href="#delete"><span class="octicon octicon-link"></span></a>DELETE</h4>
+
+<p>Deleting a resource is easy, and I'm sure you can guess what you need to do.  Making a <code>DELETE</code> request to the server will remove the resource.</p>
+
+<pre><code>curl -i -X DELETE http://localhost:3000/Employee/26
+</code></pre>
+
+<p>The resource is removed, and the server responds with an empty body and a <code>204 No Content</code> status.</p>
+
+<pre><code>HTTP/1.1 204 No Content
+X-Powered-By: Express
+Date: Sat, 01 Feb 2014 22:55:14 GMT
+Connection: keep-alive
+</code></pre>
+
+<h2>
+<a name="configuration" class="anchor" href="#configuration"><span class="octicon octicon-link"></span></a>Configuration</h2>
+
+<p>The heart of Spurious is the <code>spurious.yaml</code> file, and the sample app uses the following configuration.</p>
+
+<pre><code>resources:
+  - 
+    name: Employee
+    methods:
+      - get
+      - post
+      - put
+      - delete
+    generate: 25
+    properties: 
+      -  
+        name: EmployeeId
+        type: int
+        pk: true
+      -  
+        name: FirstName
+        faker: 
+          category: Name
+          type: firstName
+      - 
+        name: LastName
+        faker:
+          category: Name
+          type: lastName
+</code></pre>
+
+<p>The configuration file is simple.  There is a list of <code>resources</code>.  You can define as many resources as you need. </p>
+
+<p>Each resource has a <code>name</code>, available HTTP <code>methods</code>, and a list of <code>properties</code>.  Below, I will get into which properties are required and details about what each property accomplishes.</p>
+
+<h4>
+<a name="name" class="anchor" href="#name"><span class="octicon octicon-link"></span></a>"name"</h4>
+
+<p>There are two names.  The resource name and the property name.  Both of these names are required.  If a resource is defined, it must have a name.  If a property is defined, it also must have a name.</p>
+
+<p>The resource name is used in the URL when making requests for a resource.  In the above file, you will notice that the resource's <code>name</code> is <code>Employee</code> which directly corresponds to the "Employee" in the URL (e.g. <code>http://localhost:3000/Employee</code>).</p>
+
+<p>The property name is the name that is used in the JSON objects that are sent between the client and the server.  For example, in the above example, the <code>Employee</code> resource has three properties.  Each property has a <code>name</code>.  Notice that the JSON object that we retrieve when making the request to <code>http://localhost:3000/Employee/1</code> has three properies: <code>EmployeeId</code>, <code>FirstName</code>, and <code>LastName</code>.  These names, as you can guess, directly correspond to the property names defined in the configuration.</p>
+
+<h4>
+<a name="methods" class="anchor" href="#methods"><span class="octicon octicon-link"></span></a>"methods"</h4>
+
+<p><code>methods</code> is a list of HTTP methods that the server will allow for a resource.  The available options are <code>get</code>, <code>post</code>, <code>put</code>, and <code>delete</code>.  If you try to make a request for a resource that does not allow that particular method, the server will return a <code>405 Method Not Allowed</code> status.</p>
+
+<h4>
+<a name="properties" class="anchor" href="#properties"><span class="octicon octicon-link"></span></a>"properties"</h4>
+
+<p>Properties were discussed above in the <code>"name"</code> section.  The properties array is required to have at least one element.  You can have as many properties as you like.</p>
+
+<h4>
+<a name="generate" class="anchor" href="#generate"><span class="octicon octicon-link"></span></a>"generate"</h4>
+
+<p>If <code>generate</code> exists with a valid integer value, Spurious will generate that number of records.  If the <code>generate</code> property does not exist, no records will be generated.  You can still perform all actions on the resource.</p>
+
+<h4>
+<a name="faker" class="anchor" href="#faker"><span class="octicon octicon-link"></span></a>"faker"</h4>
+
+<p>If <code>generate</code> exists, one or more properties must have a <code>faker</code> property.  The <code>faker</code> property has two required properties, <code>category</code> and <code>type</code>.  The two required properties correspond directly to the marvelous <a href="https://github.com/marak/Faker.js/">Faker.js</a> API.  Take a look at the documentation for Faker.js to see what generated data is available.  </p>
+
+<p><code>category</code> corresponds to the top-level of the API.  For instance, <code>Name</code>, <code>Address</code>, <code>PhoneNumber</code>, etc.  The <code>category</code> value <strong>is</strong> case-sensitive.</p>
+
+<p>The <code>type</code> of <code>faker</code> directly corresponds to the bottom-level of the Faker.js API.  For example, <code>findName</code>, <code>phoneNumber</code>, <code>email</code>, etc.  The <code>type</code> is also case sensitive.  </p>
+
+<p>Take a look at the Faker.js API.  It is really, really cool.</p>
+
+<h4>
+<a name="pk" class="anchor" href="#pk"><span class="octicon octicon-link"></span></a>"pk"</h4>
+
+<p>The <code>pk</code> property of an element of <code>properties</code> defines the resource's primary key.  One, and only one, primary key can be defined per resource.  If multiple primary keys are defined in a single resource, Spurious will spit out an error message and not load anything.  </p>
+
+<p>The primary key is auto-generated.  The value of the key is always an integer and always begins at 1.  This is the value used when making requests on a resource that require an id (e.g.. <code>http://localhost:3000/Employee/1</code>.</p>
+      </section>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-47767928-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
