@@ -1,6 +1,6 @@
 {
   "name": "spurious",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A super-lightweight mock web service generator.",
   "main": "index.js",
   "scripts": {
