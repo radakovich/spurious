@@ -1,6 +1,6 @@
 {
   "name": "spurious",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "A super-lightweight mock web service generator.",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/JJJaquette/spurious.js"
+    "url": "https://github.com/radakovich/spurious"
   },
   "keywords": [
     "mock",
@@ -16,12 +16,12 @@
     "expressjs",
     "node"
   ],
-  "author": "Jean-Jacques Jaquette",
+  "author": "Jake Radakovich",
   "license": "GPL",
   "bugs": {
-    "url": "https://github.com/JJJaquette/spurious.js/issues"
+    "url": "https://github.com/radakovich/spurious/issues"
   },
-  "homepage": "https://github.com/JJJaquette/spurious.js",
+  "homepage": "http://radakovich.github.io/spurious",
   "devDependencies": {
     "gulp": "~3.5.0",
     "gulp-jasmine": "~0.1.2",
