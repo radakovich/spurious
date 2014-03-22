@@ -1,6 +1,6 @@
 {
   "name": "spurious",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "A super-lightweight mock web service generator.",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,7 @@
     "node"
   ],
   "author": "Jake Radakovich",
-  "license": "GPL",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/radakovich/spurious/issues"
   },
