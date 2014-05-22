@@ -8,7 +8,7 @@ This library was born out of the frustration that comes with developing the fron
 ## Quick Start
 
 The easiest way to get running quickly with Spurious is to clone the 
-[Spurious sample app](https://github.com/JJJaquette/spurious-sample-app) on your local machine.
+[Spurious sample app](https://github.com/radakovich/spurious-sample-app) on your local machine.
 
 ```
 git clone https://github.com/JJJaquette/spurious-sample-app
