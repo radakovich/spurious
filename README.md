@@ -11,7 +11,7 @@ The easiest way to get running quickly with Spurious is to clone the
 [Spurious sample app](https://github.com/radakovich/spurious-sample-app) on your local machine.
 
 ```
-git clone https://github.com/JJJaquette/spurious-sample-app
+git clone https://github.com/radakovich/spurious-sample-app
 ```
 Next, change into the sample app's directory, install the necessary modules, and start the server.
 ```
